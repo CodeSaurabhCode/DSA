@@ -113,7 +113,48 @@ class BinarySearchTree:
         if value > self.value and self.right_child:
             return self.right_child.find_node(value)
         return value == self.value
-    
+    def delete_node(self, value, parent):
+        if value < self.value and self.left_child:
+            return self.left_child.delete_node(value, self)
+        elif value < self.value:
+            return False
+        elif value > self.value and self.right_child:
+            return self.right_child.delete_node(value, self)
+        elif value > self.value:
+            return False
+        else:
+            if self.left_child is None and self.right_child is None and self == parent.left_child:
+                parent.left_child = None
+                self.clear_node()
+            elif self.left_child is None and self.right_child is None and self == parent.right_child:
+                parent.right_child = None
+                self.clear_node()
+            elif self.left_child and self.right_child is None and self == parent.left_child:
+                parent.left_child = self.left_child
+                self.clear_node()
+            elif self.left_child and self.right_child is None and self == parent.right_child:
+                parent.right_child = self.left_child
+                self.clear_node()
+            elif self.right_child and self.left_child is None and self == parent.left_child:
+                parent.left_child = self.right_child
+                self.clear_node()
+            elif self.right_child and self.left_child is None and self == parent.right_child:
+                parent.right_child = self.right_child
+                self.clear_node()
+            else:
+                self.value = self.right_child.find_minimum_value()
+                self.right_child.delete_node(self.value, self)
+            return True
+    def clear_node(self):
+        self.value = None
+        self.left_child = None
+        self.right_child = None
+    def find_minimum_value(self):
+        if self.left_child:
+            return self.left_child.find_minimum_value()
+        else:
+            return self.value
+        
 insert_values = [76, 21, 4, 32, 100, 64, 52]
 bst = BinarySearchTree(50)
 for value in insert_values:
@@ -121,3 +162,40 @@ for value in insert_values:
 
 bst.bfs()
 print(bst.find_node(101))
+
+
+# deletion is a difficult operation
+# 1. delete a leaf node
+# 2. delete a node with one child
+# 3. delete a node with two children
+
+tree = BinaryTree("1")
+tree.insert_left("2")
+tree.left_node.insert_left("3")
+tree.left_node.insert_right("4")
+tree.insert_right("5")
+tree.right_node.insert_left("6")
+tree.right_node.insert_right("7")
+class solution(object):
+    def preorder_traversal(self, root:BinaryTree):
+        output = []
+        while root:
+            while root:
+                if root.left_node:
+                    output.append(root.left_node.value)
+                
+        return output
+    def inorder_traversal(self, root):
+        output = []
+        stack = []
+        while stack or root:
+            while root:
+                stack.append(root)
+                root = root.left_node
+            root = stack.pop()
+            output.append(root.value)
+            root = root.right_node
+        return output
+print("leetcode94")
+order = solution()
+print(order.preorder_traversal(tree))
